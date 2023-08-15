@@ -1,0 +1,14 @@
+import { Config } from "drizzle-kit";
+
+
+const testDBDev = 'URL-GOES-HERE?ssl={"rejectUnauthorized":true}';
+
+const testDBPord ='URL-GOES-HERE?ssl={"rejectUnauthorized":true}';
+
+export default {
+  schema: "./src/db/schema.ts",
+  driver: "mysql2",
+  dbCredentials: {
+    connectionString: testDBDev,
+  },
+} satisfies Config;
