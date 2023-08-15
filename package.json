@@ -12,7 +12,9 @@
   },
   "dependencies": {
     "@clerk/nextjs": "^4.23.2",
+    "@hookform/resolvers": "^3.2.0",
     "@planetscale/database": "^1.10.0",
+    "@radix-ui/react-label": "^2.0.2",
     "@radix-ui/react-slot": "^1.0.2",
     "@t3-oss/env-nextjs": "^0.3.1",
     "@tanstack/react-query": "^4.29.25",
@@ -28,10 +30,11 @@
     "next": "^13.4.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-hook-form": "^7.45.4",
     "superjson": "^1.13.1",
     "tailwind-merge": "^1.14.0",
     "tailwindcss-animate": "^1.0.6",
-    "zod": "^3.21.4"
+    "zod": "^3.22.0"
   },
   "devDependencies": {
     "@types/eslint": "^8.37.0",
