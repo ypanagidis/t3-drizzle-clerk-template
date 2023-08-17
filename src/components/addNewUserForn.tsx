@@ -13,13 +13,25 @@ import {
 } from "./ui/form";
 import { Input } from "./ui/input";
 import { api } from "~/utils/api";
+import {
+  DialogTitle,
+  Dialog,
+  DialogContent,
+  DialogTrigger,
+  DialogDescription,
+} from "./ui/dialog";
+import { DialogClose } from "@radix-ui/react-dialog";
 
 const formSchema = z.object({
   firstName: z.string().min(2).max(50),
   lastName: z.string().min(2).max(50),
 });
 
-export const AddNewUserForm = () => {
+type AddNewUserFormProps = {
+  inDialog?: boolean;
+};
+
+export const AddNewUserForm = ({ inDialog }: AddNewUserFormProps) => {
   // 1. Define your form.
   const ctx = api.useContext();
   const addUser = api.users.addUser.useMutation({
@@ -41,6 +53,20 @@ export const AddNewUserForm = () => {
   const onSubmit = form.handleSubmit((data) => {
     addUser.mutate({ ...data });
   });
+
+  const submitButton = () => {
+    return inDialog && form.formState.isValid ? (
+      <DialogClose className="w-full" asChild={true}>
+        <Button onClick={() => void onSubmit()} className="w-full">
+          Submit
+        </Button>
+      </DialogClose>
+    ) : (
+      <Button onClick={() => void onSubmit()} className="w-full">
+        Submit
+      </Button>
+    );
+  };
 
   return (
     <Form {...form}>
@@ -75,10 +101,24 @@ export const AddNewUserForm = () => {
             </FormItem>
           )}
         />
-        <Button onClick={() => void onSubmit()} className="w-full">
-          Submit
-        </Button>
+        {submitButton()}
       </div>
     </Form>
+  );
+};
+
+export const AddNewUserFormDialog = () => {
+  return (
+    <Dialog>
+      <DialogTrigger className="w-full">
+        <Button className="w-full">Add New User</Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogTitle>Add A New User</DialogTitle>
+        <DialogDescription>
+          <AddNewUserForm inDialog={true} />
+        </DialogDescription>
+      </DialogContent>
+    </Dialog>
   );
 };
