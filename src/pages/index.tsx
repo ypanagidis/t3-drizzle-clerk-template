@@ -1,4 +1,5 @@
 import { AddNewUserFormDialog } from "~/components/addNewUserForn";
+import { ModeToggle } from "~/components/ui/modeToggle";
 import { api } from "~/utils/api";
 
 export default function Home() {
@@ -15,6 +16,7 @@ export default function Home() {
         ))}
         <div>{/* <AddNewUserForm /> */}</div>
         <AddNewUserFormDialog />
+        <ModeToggle />
       </div>
     </div>
   );
