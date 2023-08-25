@@ -66,61 +66,66 @@ export function UserDataTableResizable<TData, TValue>({
     onRowSelectionChange: setRowSelection,
   });
 
+  const handleResizeTable = () => {
+    table.resetColumnSizing();
+  };
+
   return (
     <div className="flex flex-col items-start justify-center">
-      <div className="flex w-full items-center justify-end">
-        <div className="flex items-center py-4">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="ml-auto rounded-3xl">
-                Columns
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              {table
-                .getAllColumns()
-                .filter((column) => column.getCanHide())
-                .map((column) => (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    className="capitalize"
-                    checked={column.getIsVisible()}
-                    onCheckedChange={(value) =>
-                      column.toggleVisibility(!!value)
-                    }
-                  >
-                    {column.id}
-                  </DropdownMenuCheckboxItem>
-                ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
+      <div className="flex w-full items-center justify-end space-x-2 py-4">
+        <Button
+          variant="outline"
+          className="ml-auto"
+          onClick={() => void handleResizeTable()}
+        >
+          Reset column sizing
+        </Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" className="ml-auto">
+              Columns
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            {table
+              .getAllColumns()
+              .filter((column) => column.getCanHide())
+              .map((column) => (
+                <DropdownMenuCheckboxItem
+                  key={column.id}
+                  className="capitalize"
+                  checked={column.getIsVisible()}
+                  onCheckedChange={(value) => column.toggleVisibility(!!value)}
+                >
+                  {column.id}
+                </DropdownMenuCheckboxItem>
+              ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
       <div className="w-full rounded-3xl border p-1">
         <Table className="w-full  ">
-          <TableHeader>
+          <TableHeader className="rounded-2xl">
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
+              <TableRow key={headerGroup.id} className="hover:bg-muted/0">
                 {headerGroup.headers.map((header) => {
                   return (
                     <TableHead
                       key={header.id}
-                      className={`relative w-[${header.getSize()}]}`}
+                      className={`relative w-[${header.getSize()}] `}
                       colSpan={header.colSpan}
                     >
                       {header.isPlaceholder
                         ? null
                         : flexRender(
                             header.column.columnDef.header,
-                            header.getContext()
+                            header.getContext(),
                           )}
                       {header.column.getCanResize() && (
                         <div
                           onMouseDown={header.getResizeHandler()}
                           onTouchStart={header.getResizeHandler()}
-                          className={`resizer  ${
-                            header.column.getIsResizing() ? "isResizing" : ""
-                          }`}
+                          className="resizer hover:bg-gray-700"
                         ></div>
                       )}
                     </TableHead>
@@ -140,7 +145,7 @@ export function UserDataTableResizable<TData, TValue>({
                     <TableCell key={cell.id} width={cell.column.getSize()}>
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext()
+                        cell.getContext(),
                       )}
                     </TableCell>
                   ))}
