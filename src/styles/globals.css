@@ -132,7 +132,7 @@
   background: rgba(135, 102, 102, 0.083);
   cursor: col-resize;
   user-select: none;
-  touch-action: none;
+  /* touch-action: none; */
 }
 .resizer.isResizing {
   background: blue;

@@ -35,6 +35,7 @@ export const usersDataTableColumns: Array<ColumnDef<UserFromAllUsers>> = [
     enableSorting: false,
     enableHiding: false,
     enableResizing: false,
+    maxSize: 5
   },
   {
     accessorKey: "firstName",
@@ -73,6 +74,7 @@ export const usersDataTableColumns: Array<ColumnDef<UserFromAllUsers>> = [
     header: () => <p className="text-center">Actions</p>,
     cell: ({ row }) => <ActionDropDown row={row} />,
     enableResizing: false,
+    enableHiding: false
     // header: ({}) => <span>Actions</span>,
   },
 ];
