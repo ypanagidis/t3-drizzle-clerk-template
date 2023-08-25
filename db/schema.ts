@@ -44,7 +44,7 @@ export const users = mysqlTable("users", {
   firstName: varchar("firstName", { length: 256 }),
   lastName: varchar("lastName", { length: 256 }),
   age: int("age"),
-  sex: varchar("sex", { length: 256 }),
+  gender: varchar("sex", { length: 256 }),
   createdAt: timestamp("createdAt").defaultNow(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow(),
 });

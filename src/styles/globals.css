@@ -122,3 +122,19 @@
     @apply bg-background text-foreground;
   }
 }
+
+.resizer {
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100%;
+  width: 5px;
+  background: rgba(135, 102, 102, 0.083);
+  cursor: col-resize;
+  user-select: none;
+  touch-action: none;
+}
+.resizer.isResizing {
+  background: blue;
+  opacity: 1;
+}
