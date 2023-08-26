@@ -7,13 +7,12 @@ export const addUserProcedure = protectedProcedure
     z.object({
       firstName: z.string(),
       lastName: z.string(),
-    })
+      gender: z.string(),
+      age: z.number(),
+    }),
   )
   .mutation(async ({ ctx, input }) => {
-    const { firstName, lastName } = input;
     const { db } = ctx;
 
-    return await db
-      .insert(users)
-      .values({ firstName: firstName, lastName: lastName });
+    return await db.insert(users).values({ ...input });
   });

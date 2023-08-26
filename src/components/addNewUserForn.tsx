@@ -8,6 +8,7 @@ import {
   // FormDescription,
   FormField,
   FormItem,
+  FormLabel,
   // FormLabel,
   FormMessage,
 } from "./ui/form";
@@ -23,8 +24,22 @@ import {
 import { DialogClose } from "@radix-ui/react-dialog";
 
 const formSchema = z.object({
-  firstName: z.string().min(2).max(50),
-  lastName: z.string().min(2).max(50),
+  firstName: z
+    .string()
+    .min(2, { message: "First Name must be at least two characters" })
+    .max(50, { message: "First Name cannot be more than fifty characters" }),
+  lastName: z
+    .string()
+    .min(2, { message: "Last Name must be at least two characters" })
+    .max(50, { message: "Last Name cannot be more than fifty characters" }),
+  gender: z
+    .string()
+    .min(2, { message: "Gender must be at least two characters" })
+    .max(50, { message: "Gender cannot be more than fifty characters" }),
+  age: z
+    .string()
+    .min(1, { message: "Age must be at least one characters" })
+    .max(3, { message: "Age cannot be more than three characters" }),
 });
 
 type AddNewUserFormProps = {
@@ -46,12 +61,19 @@ export const AddNewUserForm = ({ inDialog }: AddNewUserFormProps) => {
     defaultValues: {
       firstName: "",
       lastName: "",
+      gender: "",
+      age: "",
     },
   });
 
   // 2. Define a submit handler.
-  const onSubmit = form.handleSubmit((data) => {
-    addUser.mutate({ ...data });
+  const onSubmit = form.handleSubmit(async (data) => {
+    try {
+      const age = parseInt(data.age);
+      await addUser.mutateAsync({ ...data, age: age });
+    } catch (_) {
+      form.setError("age", { message: "Age needs to be a number" });
+    }
   });
 
   const submitButton = () => {
@@ -70,16 +92,16 @@ export const AddNewUserForm = ({ inDialog }: AddNewUserFormProps) => {
 
   return (
     <Form {...form}>
-      <div className="space-y-5">
+      <div className="space-y-5 text-gray-100">
         <FormField
           control={form.control}
           name="firstName"
           render={({ field }) => (
             <FormItem className="">
-              {/* <FormLabel>Username</FormLabel> */}
+              <FormLabel>Username</FormLabel>
               <div className="">
                 <FormControl>
-                  <Input placeholder="First Name" {...field} />
+                  <Input placeholder="First Name" className="" {...field} />
                 </FormControl>
                 {/* <FormDescription>This is your first name.</FormDescription> */}
               </div>
@@ -92,7 +114,7 @@ export const AddNewUserForm = ({ inDialog }: AddNewUserFormProps) => {
           name="lastName"
           render={({ field }) => (
             <FormItem>
-              {/* <FormLabel>Username</FormLabel> */}
+              <FormLabel>Last Name</FormLabel>
               <FormControl>
                 <Input placeholder="Last Name" {...field} />
               </FormControl>
@@ -101,6 +123,41 @@ export const AddNewUserForm = ({ inDialog }: AddNewUserFormProps) => {
             </FormItem>
           )}
         />
+        <FormField
+          control={form.control}
+          name="gender"
+          rules={{
+            required: {
+              message: "You have to provide an age",
+              value: true,
+            },
+          }}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Gender</FormLabel>
+              <FormControl>
+                <Input placeholder="Gender" {...field} />
+              </FormControl>
+              {/* <FormDescription>This is your last name.</FormDescription> */}
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="age"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Age</FormLabel>
+              <FormControl>
+                <Input placeholder="Age" {...field} />
+              </FormControl>
+              {/* <FormDescription>This is your last name.</FormDescription> */}
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
         {submitButton()}
       </div>
     </Form>
