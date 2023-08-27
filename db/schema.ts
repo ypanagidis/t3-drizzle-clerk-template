@@ -16,7 +16,7 @@ export const posts = mysqlTable(
     createdAt: timestamp("createdAt").defaultNow(),
     updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow(),
   },
-  () => ({})
+  () => ({}),
 );
 
 export const postRelations = relations(posts, ({ many }) => ({
@@ -41,12 +41,12 @@ export const commentsRelations = relations(comments, ({ one }) => ({
 
 export const users = mysqlTable("users", {
   id: serial("id").primaryKey().notNull(),
-  firstName: varchar("firstName", { length: 256 }),
-  lastName: varchar("lastName", { length: 256 }),
-  age: int("age"),
-  gender: varchar("gender", { length: 256 }),
+  firstName: varchar("firstName", { length: 256 }).notNull(),
+  lastName: varchar("lastName", { length: 256 }).notNull(),
+  age: int("age").notNull(),
+  gender: varchar("gender", { length: 256 }).notNull(),
   createdAt: timestamp("createdAt").defaultNow(),
-  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow(),
+  updatedAt: timestamp("updatedAt").defaultNow(),
 });
 
 export const usersRelations = relations(users, ({ many }) => ({
@@ -61,7 +61,7 @@ export const usersToPosts = mysqlTable(
   },
   (t) => ({
     pk: primaryKey(t.postId, t.userId),
-  })
+  }),
 );
 
 export const usersToPostsRelations = relations(usersToPosts, ({ one }) => ({
