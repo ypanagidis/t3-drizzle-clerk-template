@@ -128,7 +128,7 @@ export const AddNewUserFormDialog = () => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger className="w-full">
-        <Button className="w-full">Add New User</Button>
+        <Button className="w-full">Add A New User</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogTitle>Add A New User</DialogTitle>
