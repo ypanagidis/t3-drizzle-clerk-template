@@ -5,11 +5,9 @@ import { Button } from "./ui/button";
 import {
   Form,
   FormControl,
-  // FormDescription,
   FormField,
   FormItem,
   FormLabel,
-  // FormLabel,
   FormMessage,
 } from "./ui/form";
 import { Input } from "./ui/input";
@@ -22,6 +20,8 @@ import {
   DialogDescription,
 } from "./ui/dialog";
 import { DialogClose } from "@radix-ui/react-dialog";
+import { FromComboBox } from "./ui/ComboboxForm";
+import { useState } from "react";
 
 const formSchema = z.object({
   firstName: z
@@ -42,6 +42,8 @@ const formSchema = z.object({
     .max(3, { message: "Age cannot be more than three characters" }),
 });
 
+type FValues = z.infer<typeof formSchema>;
+
 type AddNewUserFormProps = {
   inDialog?: boolean;
 };
@@ -56,6 +58,7 @@ export const AddNewUserForm = ({ inDialog }: AddNewUserFormProps) => {
       form.reset();
     },
   });
+  const [genders, setGenders] = useState(["Male", "Female", "Non-Binary"]);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -65,12 +68,12 @@ export const AddNewUserForm = ({ inDialog }: AddNewUserFormProps) => {
       age: "",
     },
   });
-
   // 2. Define a submit handler.
-  const onSubmit = form.handleSubmit(async (data) => {
+  const onSubmit = form.handleSubmit((data) => {
     try {
       const age = parseInt(data.age);
-      await addUser.mutateAsync({ ...data, age: age });
+      addUser.mutate({ ...data, age: age, gender: "male" });
+      // form.setError("root", {});
     } catch (_) {
       form.setError("age", { message: "Age needs to be a number" });
     }
@@ -84,7 +87,7 @@ export const AddNewUserForm = ({ inDialog }: AddNewUserFormProps) => {
         </Button>
       </DialogClose>
     ) : (
-      <Button onClick={() => void onSubmit()} className="w-full">
+      <Button onClick={() => void onSubmit()} className="w-full bg-slate-50">
         Submit
       </Button>
     );
@@ -123,26 +126,7 @@ export const AddNewUserForm = ({ inDialog }: AddNewUserFormProps) => {
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="gender"
-          rules={{
-            required: {
-              message: "You have to provide an age",
-              value: true,
-            },
-          }}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Gender</FormLabel>
-              <FormControl>
-                <Input placeholder="Gender" {...field} />
-              </FormControl>
-              {/* <FormDescription>This is your last name.</FormDescription> */}
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+
         <FormField
           control={form.control}
           name="age"
@@ -156,6 +140,16 @@ export const AddNewUserForm = ({ inDialog }: AddNewUserFormProps) => {
               <FormMessage />
             </FormItem>
           )}
+        />
+
+        <FromComboBox<string, FValues>
+          control={form.control}
+          name="gender"
+          FormLabel={<FormLabel>Gender</FormLabel>}
+          options={genders}
+          setOptions={setGenders}
+          mapper={(item) => item}
+          methods={form}
         />
 
         {submitButton()}
@@ -179,3 +173,78 @@ export const AddNewUserFormDialog = () => {
     </Dialog>
   );
 };
+
+// const combo = (
+//   <FormField
+//     control={form.control}
+//     name="gender"
+//     render={({ field }) => (
+//       <FormItem className="flex flex-col justify-start">
+//         <FormLabel>Gender</FormLabel>
+//         <Popover>
+//           <PopoverTrigger asChild>
+//             <FormControl>
+//               <Button
+//                 variant="outline"
+//                 role="combobox"
+//                 className={cn(
+//                   " justify-start",
+//                   !field.value && "text-muted-foreground",
+//                 )}
+//               >
+//                 {field.value
+//                   ? genders.find((gender) => gender === field.value)
+//                   : "Select gender"}
+//                 <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+//               </Button>
+//             </FormControl>
+//           </PopoverTrigger>
+//           <PopoverContent className="justify-start p-0" align="start">
+//             <Command>
+//               <CommandInput
+//                 placeholder="Select Gender"
+//                 value={gender}
+//                 onValueChange={setGender}
+//               />
+//               <CommandEmpty>
+//                 <div className="flex items-center justify-start">
+//                   <Button
+//                     variant="ghost"
+//                     onClick={() => {
+//                       form.setValue("gender", gender);
+//                       setGenders((prev) => [...prev, gender]);
+//                     }}
+//                     className="w-full text-start"
+//                   >
+//                     Add {gender}
+//                   </Button>
+//                 </div>
+//               </CommandEmpty>
+//               {/* What we see in the dropdown */}
+//               <CommandGroup>
+//                 {genders.map((gender) => (
+//                   <CommandItem
+//                     value={gender}
+//                     key={gender}
+//                     onSelect={() => {
+//                       form.setValue("gender", gender);
+//                     }}
+//                   >
+//                     <Check
+//                       className={cn(
+//                         "mr-2 h-4 w-4",
+//                         gender === field.value ? "opacity-100" : "opacity-0",
+//                       )}
+//                     />
+//                     {gender}
+//                   </CommandItem>
+//                 ))}
+//               </CommandGroup>
+//             </Command>
+//           </PopoverContent>
+//         </Popover>
+//         <FormMessage />
+//       </FormItem>
+//     )}
+//   />
+// );
