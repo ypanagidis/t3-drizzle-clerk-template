@@ -1,5 +1,5 @@
 import { DialogClose } from "@radix-ui/react-dialog";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 
 type FormSubmitButtonProps = {
   submitHandler: () => void;

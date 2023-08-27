@@ -14,7 +14,8 @@ import {
 
 import { Checkbox } from "../ui/checkbox";
 import { useState } from "react";
-import { EditUserForm } from "../editUserForm";
+import { EditUserForm } from "./editUserForm";
+import { DeleteUserModal } from "./deleteUserModal";
 
 export const usersDataTableColumns: Array<ColumnDef<UserFromAllUsers>> = [
   {
@@ -86,16 +87,30 @@ type ActionDropDownProps = {
 };
 
 const ActionDropDown = ({ row }: ActionDropDownProps) => {
-  const [open, setOpen] = useState(false);
+  const [openEditUserModal, setOpenEditUserModal] = useState(false);
+  const [openDeleteUserModal, setOpenDeleteUserModal] = useState(false);
   const user = row.original;
 
   const handleShowEditUser = () => {
-    setOpen(true);
+    setOpenEditUserModal(true);
   };
 
-  if (open)
+  if (openEditUserModal)
     return (
-      <EditUserForm user={user} openDialog={open} setOpenDialog={setOpen} />
+      <EditUserForm
+        user={user}
+        openDialog={openEditUserModal}
+        setOpenDialog={setOpenEditUserModal}
+      />
+    );
+
+  if (openDeleteUserModal)
+    return (
+      <DeleteUserModal
+        openModal={openDeleteUserModal}
+        setOpenModal={setOpenDeleteUserModal}
+        userId={user.id}
+      />
     );
 
   return (
@@ -120,7 +135,9 @@ const ActionDropDown = ({ row }: ActionDropDownProps) => {
         <DropdownMenuItem onClick={() => void handleShowEditUser()}>
           Edit User
         </DropdownMenuItem>
-        <DropdownMenuItem>Delete User</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => void setOpenDeleteUserModal(true)}>
+          Delete User
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

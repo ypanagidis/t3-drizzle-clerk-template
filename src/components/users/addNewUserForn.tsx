@@ -1,8 +1,8 @@
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { Button } from "./ui/button";
-import { Form, FormLabel } from "./ui/form";
+import { Button } from "../ui/button";
+import { Form, FormLabel } from "../ui/form";
 import { api } from "~/utils/api";
 import {
   DialogTitle,
@@ -10,10 +10,10 @@ import {
   DialogContent,
   DialogTrigger,
   DialogDescription,
-} from "./ui/dialog";
-import { FromComboBox } from "./ui/ComboboxForm";
+} from "../ui/dialog";
+import { FromComboBox } from "../ui/comboboxForm";
 import { type Dispatch, type SetStateAction, useState } from "react";
-import { FormInput } from "./ui/formInput";
+import { FormInput } from "../ui/formInput";
 
 //Form Schema
 const formSchema = z.object({
@@ -42,11 +42,13 @@ type AddNewUserFormProps = {
   inDialog?: boolean;
   setOpen?: Dispatch<SetStateAction<boolean>>;
   defaulValues?: FValues;
+  userId?: number;
 };
 
 export const AddNewUserForm = ({
   setOpen,
   defaulValues,
+  userId,
 }: AddNewUserFormProps) => {
   //State and hooks
   const ctx = api.useContext();
@@ -77,7 +79,7 @@ export const AddNewUserForm = ({
   const onSubmit = form.handleSubmit((data) => {
     try {
       const age = parseInt(data.age);
-      addUser.mutate({ ...data, age: age });
+      addUser.mutate({ ...data, age: age, id: userId });
     } catch (_) {
       form.setError("age", { message: "Age needs to be a number" });
     }

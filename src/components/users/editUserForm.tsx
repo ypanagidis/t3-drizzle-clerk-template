@@ -4,7 +4,7 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
-} from "./ui/dialog";
+} from "../ui/dialog";
 
 import { AddNewUserForm } from "./addNewUserForn";
 import type { UserFromAllUsers } from "~/utils/types";
@@ -30,6 +30,7 @@ export const EditUserForm = ({
             inDialog={true}
             setOpen={setOpenDialog}
             defaulValues={{ ...user, age: user.age.toString() }}
+            userId={user.id}
           />
         </DialogDescription>
       </DialogContent>

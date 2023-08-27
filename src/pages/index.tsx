@@ -1,4 +1,4 @@
-import { AddNewUserFormDialog } from "~/components/addNewUserForn";
+import { AddNewUserFormDialog } from "~/components/users/addNewUserForn";
 import { ModeToggle } from "~/components/ui/modeToggle";
 // import { UsersDataTable } from "~/components/users/usersDataTable";
 import { usersDataTableColumns } from "~/components/users/usersDataTableColumns";
