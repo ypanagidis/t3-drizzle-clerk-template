@@ -13,8 +13,8 @@ import {
 } from "../ui/dialog";
 import { type Dispatch, type SetStateAction, useState } from "react";
 import { FormInput } from "../ui/formInput";
+import { FromComboBox } from "../ui/ComboboxForm";
 
-import { FromComboBox } from "../ui/comboboxForm";
 //Form Schema
 const formSchema = z.object({
   firstName: z
