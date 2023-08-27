@@ -13,6 +13,8 @@ import {
 } from "../ui/dropdown-menu";
 
 import { Checkbox } from "../ui/checkbox";
+import { useState } from "react";
+import { EditUserForm } from "../editUserForm";
 
 export const usersDataTableColumns: Array<ColumnDef<UserFromAllUsers>> = [
   {
@@ -35,7 +37,7 @@ export const usersDataTableColumns: Array<ColumnDef<UserFromAllUsers>> = [
     enableSorting: false,
     enableHiding: false,
     enableResizing: false,
-    maxSize: 5
+    maxSize: 5,
   },
   {
     accessorKey: "firstName",
@@ -74,7 +76,7 @@ export const usersDataTableColumns: Array<ColumnDef<UserFromAllUsers>> = [
     header: () => <p className="text-center">Actions</p>,
     cell: ({ row }) => <ActionDropDown row={row} />,
     enableResizing: false,
-    enableHiding: false
+    enableHiding: false,
     // header: ({}) => <span>Actions</span>,
   },
 ];
@@ -84,7 +86,17 @@ type ActionDropDownProps = {
 };
 
 const ActionDropDown = ({ row }: ActionDropDownProps) => {
+  const [open, setOpen] = useState(false);
   const user = row.original;
+
+  const handleShowEditUser = () => {
+    setOpen(true);
+  };
+
+  if (open)
+    return (
+      <EditUserForm user={user} openDialog={open} setOpenDialog={setOpen} />
+    );
 
   return (
     <DropdownMenu>
@@ -105,6 +117,9 @@ const ActionDropDown = ({ row }: ActionDropDownProps) => {
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem>View User Card</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => void handleShowEditUser()}>
+          Edit User
+        </DropdownMenuItem>
         <DropdownMenuItem>Delete User</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

@@ -39,7 +39,7 @@ export function FromComboBox<TOption, TFieldValues extends FieldValues>({
   setOptions,
 }: FromComboBoxProps<TOption, TFieldValues>) {
   const [option, setOption] = useState<string>("");
-
+  control;
   return (
     <FormField
       control={control}
@@ -58,9 +58,9 @@ export function FromComboBox<TOption, TFieldValues extends FieldValues>({
                     !field.value && "text-muted-foreground",
                   )}
                 >
-                  {field.value
-                    ? options.find((option) => option === field.value)
-                    : "Select gender"}
+                  {field.value || !(field.value === "" || field.value === null)
+                    ? field.value
+                    : "Choose Gender"}
                   <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </Button>
               </FormControl>

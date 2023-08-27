@@ -41,9 +41,13 @@ type FValues = z.infer<typeof formSchema>;
 type AddNewUserFormProps = {
   inDialog?: boolean;
   setOpen?: Dispatch<SetStateAction<boolean>>;
+  defaulValues?: FValues;
 };
 
-export const AddNewUserForm = ({ setOpen }: AddNewUserFormProps) => {
+export const AddNewUserForm = ({
+  setOpen,
+  defaulValues,
+}: AddNewUserFormProps) => {
   //State and hooks
   const ctx = api.useContext();
   const [genders, setGenders] = useState(["Male", "Female", "Non-Binary"]);
@@ -61,7 +65,7 @@ export const AddNewUserForm = ({ setOpen }: AddNewUserFormProps) => {
   //Form definition
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
+    defaultValues: defaulValues ?? {
       firstName: "",
       lastName: "",
       gender: "",
