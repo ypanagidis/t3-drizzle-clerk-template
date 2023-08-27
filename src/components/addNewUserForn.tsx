@@ -11,11 +11,11 @@ import {
   DialogTrigger,
   DialogDescription,
 } from "./ui/dialog";
-import { DialogClose } from "@radix-ui/react-dialog";
 import { FromComboBox } from "./ui/ComboboxForm";
-import { useState } from "react";
+import { type Dispatch, type SetStateAction, useState } from "react";
 import { FormInput } from "./ui/formInput";
 
+//Form Schema
 const formSchema = z.object({
   firstName: z
     .string()
@@ -35,23 +35,30 @@ const formSchema = z.object({
     .max(3, { message: "Age cannot be more than three characters" }),
 });
 
+//Form Schema Type
 type FValues = z.infer<typeof formSchema>;
 
 type AddNewUserFormProps = {
   inDialog?: boolean;
+  setOpen?: Dispatch<SetStateAction<boolean>>;
 };
 
-export const AddNewUserForm = ({ inDialog }: AddNewUserFormProps) => {
-  // 1. Define your form.
+export const AddNewUserForm = ({ setOpen }: AddNewUserFormProps) => {
+  //State and hooks
   const ctx = api.useContext();
+  const [genders, setGenders] = useState(["Male", "Female", "Non-Binary"]);
+
+  //API Mutation
   const addUser = api.users.addUser.useMutation({
     async onSuccess() {
       console.log("user added");
       await ctx.users.getAll.invalidate();
       form.reset();
+      setOpen && setOpen(false);
     },
   });
-  const [genders, setGenders] = useState(["Male", "Female", "Non-Binary"]);
+
+  //Form definition
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -61,30 +68,16 @@ export const AddNewUserForm = ({ inDialog }: AddNewUserFormProps) => {
       age: "",
     },
   });
-  // 2. Define a submit handler.
+
+  // Submit handler.
   const onSubmit = form.handleSubmit((data) => {
     try {
       const age = parseInt(data.age);
       addUser.mutate({ ...data, age: age });
-      // form.setError("root", {});
     } catch (_) {
       form.setError("age", { message: "Age needs to be a number" });
     }
   });
-
-  const submitButton = () => {
-    return inDialog && form.formState.isValid ? (
-      <DialogClose className="w-full" asChild={true}>
-        <Button onClick={() => void onSubmit()} className="w-full">
-          Submit
-        </Button>
-      </DialogClose>
-    ) : (
-      <Button onClick={() => void onSubmit()} className="w-full ">
-        Submit
-      </Button>
-    );
-  };
 
   return (
     <Form {...form}>
@@ -116,100 +109,27 @@ export const AddNewUserForm = ({ inDialog }: AddNewUserFormProps) => {
           mapper={(item) => item}
           methods={form}
         />
-
-        {submitButton()}
+        <Button onClick={() => void onSubmit()} className="w-full">
+          Submit
+        </Button>
       </div>
     </Form>
   );
 };
 
 export const AddNewUserFormDialog = () => {
+  const [open, setOpen] = useState(false);
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger className="w-full">
         <Button className="w-full">Add New User</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogTitle>Add A New User</DialogTitle>
         <DialogDescription>
-          <AddNewUserForm inDialog={true} />
+          <AddNewUserForm inDialog={true} setOpen={setOpen} />
         </DialogDescription>
       </DialogContent>
     </Dialog>
   );
 };
-
-// const combo = (
-//   <FormField
-//     control={form.control}
-//     name="gender"
-//     render={({ field }) => (
-//       <FormItem className="flex flex-col justify-start">
-//         <FormLabel>Gender</FormLabel>
-//         <Popover>
-//           <PopoverTrigger asChild>
-//             <FormControl>
-//               <Button
-//                 variant="outline"
-//                 role="combobox"
-//                 className={cn(
-//                   " justify-start",
-//                   !field.value && "text-muted-foreground",
-//                 )}
-//               >
-//                 {field.value
-//                   ? genders.find((gender) => gender === field.value)
-//                   : "Select gender"}
-//                 <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-//               </Button>
-//             </FormControl>
-//           </PopoverTrigger>
-//           <PopoverContent className="justify-start p-0" align="start">
-//             <Command>
-//               <CommandInput
-//                 placeholder="Select Gender"
-//                 value={gender}
-//                 onValueChange={setGender}
-//               />
-//               <CommandEmpty>
-//                 <div className="flex items-center justify-start">
-//                   <Button
-//                     variant="ghost"
-//                     onClick={() => {
-//                       form.setValue("gender", gender);
-//                       setGenders((prev) => [...prev, gender]);
-//                     }}
-//                     className="w-full text-start"
-//                   >
-//                     Add {gender}
-//                   </Button>
-//                 </div>
-//               </CommandEmpty>
-//               {/* What we see in the dropdown */}
-//               <CommandGroup>
-//                 {genders.map((gender) => (
-//                   <CommandItem
-//                     value={gender}
-//                     key={gender}
-//                     onSelect={() => {
-//                       form.setValue("gender", gender);
-//                     }}
-//                   >
-//                     <Check
-//                       className={cn(
-//                         "mr-2 h-4 w-4",
-//                         gender === field.value ? "opacity-100" : "opacity-0",
-//                       )}
-//                     />
-//                     {gender}
-//                   </CommandItem>
-//                 ))}
-//               </CommandGroup>
-//             </Command>
-//           </PopoverContent>
-//         </Popover>
-//         <FormMessage />
-//       </FormItem>
-//     )}
-//   />
-// );
