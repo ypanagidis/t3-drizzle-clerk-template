@@ -2,15 +2,7 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Button } from "./ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "./ui/form";
-import { Input } from "./ui/input";
+import { Form, FormLabel } from "./ui/form";
 import { api } from "~/utils/api";
 import {
   DialogTitle,
@@ -22,6 +14,7 @@ import {
 import { DialogClose } from "@radix-ui/react-dialog";
 import { FromComboBox } from "./ui/ComboboxForm";
 import { useState } from "react";
+import { FormInput } from "./ui/formInput";
 
 const formSchema = z.object({
   firstName: z
@@ -72,7 +65,7 @@ export const AddNewUserForm = ({ inDialog }: AddNewUserFormProps) => {
   const onSubmit = form.handleSubmit((data) => {
     try {
       const age = parseInt(data.age);
-      addUser.mutate({ ...data, age: age, gender: "male" });
+      addUser.mutate({ ...data, age: age });
       // form.setError("root", {});
     } catch (_) {
       form.setError("age", { message: "Age needs to be a number" });
@@ -87,7 +80,7 @@ export const AddNewUserForm = ({ inDialog }: AddNewUserFormProps) => {
         </Button>
       </DialogClose>
     ) : (
-      <Button onClick={() => void onSubmit()} className="w-full bg-slate-50">
+      <Button onClick={() => void onSubmit()} className="w-full ">
         Submit
       </Button>
     );
@@ -96,52 +89,24 @@ export const AddNewUserForm = ({ inDialog }: AddNewUserFormProps) => {
   return (
     <Form {...form}>
       <div className="space-y-5 text-gray-100">
-        <FormField
-          control={form.control}
+        <FormInput<FValues>
           name="firstName"
-          render={({ field }) => (
-            <FormItem className="">
-              <FormLabel>Username</FormLabel>
-              <div className="">
-                <FormControl>
-                  <Input placeholder="First Name" className="" {...field} />
-                </FormControl>
-                {/* <FormDescription>This is your first name.</FormDescription> */}
-              </div>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
           control={form.control}
+          placeholder="First Name"
+          label="First Name"
+        />
+        <FormInput<FValues>
           name="lastName"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Last Name</FormLabel>
-              <FormControl>
-                <Input placeholder="Last Name" {...field} />
-              </FormControl>
-              {/* <FormDescription>This is your last name.</FormDescription> */}
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
           control={form.control}
-          name="age"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Age</FormLabel>
-              <FormControl>
-                <Input placeholder="Age" {...field} />
-              </FormControl>
-              {/* <FormDescription>This is your last name.</FormDescription> */}
-              <FormMessage />
-            </FormItem>
-          )}
+          placeholder="Last Name"
+          label="Last Name"
         />
-
+        <FormInput<FValues>
+          name="age"
+          control={form.control}
+          placeholder="Age"
+          label="Age"
+        />
         <FromComboBox<string, FValues>
           control={form.control}
           name="gender"
